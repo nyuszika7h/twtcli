@@ -1,0 +1,9 @@
+[app]
+token = "BEARER_TOKEN"
+
+[users]
+username1 = "AUTH_TOKEN1"
+username2 = "AUTH_TOKEN2"
+
+
+# vim: set ft=toml:
