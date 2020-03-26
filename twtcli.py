@@ -136,6 +136,11 @@ if 'cursor' in req_args['params']:
 else:
     cursor = None
 
+if 'max_id' in req_args['params']:
+    max_id = req_args['params']['max_id']
+else:
+    max_id = None
+
 req_data = {'method': method, 'url': url, **req_args}
 req_data = json.dumps(req_data, sort_keys=True)
 req_hash = hashlib.sha256(req_data.encode('utf-8')).hexdigest()
@@ -147,20 +152,23 @@ os.makedirs(os.path.dirname(cursor_file), exist_ok=True)
 with open(cursor_file, 'a+') as fd:
     fd.seek(0)
 
-    if not (args.no_resume or cursor):
+    if not (args.no_resume or cursor or max_id):
         try:
-            cursor = int(fd.read())
+            data = json.load(fd)
+            cursor = data.get('cursor')
+            max_id = data.get('max_id')
         except (FileNotFoundError, ValueError):
             pass
         else:
-            log(f'Resuming from cursor {cursor} (use --no-resume to disable)')
+            if cursor or max_id:
+                log(f'Resuming from cursor {cursor or max_id} (use --no-resume to disable)')
 
     while True:
-        req_args['params'].update({'cursor': cursor})
+        req_args['params'].update({'cursor': cursor, 'max_id': max_id})
 
         fd.seek(0)
         fd.truncate()
-        fd.write(str(cursor or ''))
+        json.dump({'cursor': cursor, 'max_id': max_id}, fd)
 
         debug(f'{method} {url!r} {req_args!r}')
 
@@ -199,6 +207,11 @@ with open(cursor_file, 'a+') as fd:
         except AttributeError:
             pass
 
+        try:
+            max_id = resp[-1]['id']
+        except (AttributeError, IndexError, KeyError):
+            pass
+
         if not args.follow_cursor:
             break
 
@@ -225,7 +238,7 @@ with open(cursor_file, 'a+') as fd:
                 debug(f'Sleeping for {args.wait}s')
                 time.sleep(args.wait)
 
-        if not (args.follow_cursor and cursor):
+        if not (args.follow_cursor and (cursor or max_id)):
             break
 
 if not cursor:
