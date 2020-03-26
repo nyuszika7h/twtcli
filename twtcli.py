@@ -216,8 +216,9 @@ with open(cursor_file, 'a+') as fd:
             break
 
         if args.ignore_ratelimit:
-            debug(f'Sleeping for {args.wait}s')
-            time.sleep(args.wait)
+            if args.wait:
+                debug(f'Sleeping for {args.wait}s')
+                time.sleep(args.wait)
         else:
             # rate_limit = r.headers.get('x-rate-limit-limit')
             # if rate_limit:
