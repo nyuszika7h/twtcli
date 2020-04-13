@@ -47,7 +47,7 @@ parser.add_argument(
     '--wait',
     type=float,
     default=0,
-    help='override wait time between requests',
+    help='override wait time between requests (in seconds)',
 )
 parser.add_argument(
     '-r',
@@ -66,13 +66,13 @@ parser.add_argument(
     '-c',
     '--follow-cursor',
     action='store_true',
-    help='automatically follow next_cursor to fetch multiple pages',
+    help='automatically follow next_cursor/max_id to fetch multiple pages',
 )
 parser.add_argument(
     '-N',
     '--no-resume',
     action='store_true',
-    help='do not automatically save/restore last cursor',
+    help='do not automatically save/restore last cursor/max_id',
 )
 parser.add_argument(
     '-D',
