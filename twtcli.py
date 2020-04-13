@@ -180,7 +180,7 @@ with open(cursor_file, 'a+') as fd:
 
         # print(r.request.body)
 
-        if r.status_code == 429:
+        if r.status_code in (420, 429):
             reset = float(r.headers.get('x-rate-limit-reset'))
 
             if reset:
