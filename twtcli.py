@@ -197,7 +197,7 @@ with open(cursor_file, 'a+') as fd:
                 continue
             else:
                 log(f'Rate limit exceeded, reset time unknown - sleeping for {args.ratelimit:.1f}s')
-                time.sleep(args.ratelimit * 60)
+                time.sleep(args.ratelimit)
                 continue
 
         if not r.ok:
