@@ -209,7 +209,7 @@ with open(cursor_file, 'a+') as fd:
 
         try:
             max_id = resp[-1]['id']
-        except (AttributeError, IndexError, KeyError):
+        except (AttributeError, IndexError, KeyError, TypeError):
             pass
 
         if not args.follow_cursor:
