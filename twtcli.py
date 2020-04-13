@@ -50,6 +50,13 @@ parser.add_argument(
     help='override wait time between requests',
 )
 parser.add_argument(
+    '-r',
+    '--ratelimit',
+    type=float,
+    default=900,
+    help='number of seconds to sleep when rate limit reset is unknown',
+)
+parser.add_argument(
     '-F',
     '--ignore-ratelimit',
     action='store_true',
@@ -189,8 +196,9 @@ with open(cursor_file, 'a+') as fd:
                 time.sleep(delay)
                 continue
             else:
-                log('Rate limit exceeded, reset time unknown - exiting')
-                sys.exit(1)
+                log(f'Rate limit exceeded, reset time unknown - sleeping for {args.ratelimit:.1f}s')
+                time.sleep(args.ratelimit * 60)
+                continue
 
         if not r.ok:
             r.raise_for_status()
