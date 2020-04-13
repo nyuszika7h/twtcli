@@ -92,7 +92,7 @@ args = parser.parse_args()
 
 
 def log(s):
-    print(f'[{time.strftime("%H:%M:%S")}]', s, file=sys.stderr)
+    print(f'[{time.strftime("%H:%M:%S")}]', s, file=sys.stderr, flush=True)
 
 
 if args.debug:
@@ -208,7 +208,7 @@ with open(cursor_file, 'a+') as fd:
         else:
             resp = r.json()
 
-        print(json.dumps(resp))
+        print(json.dumps(resp), flush=True)
 
         try:
             cursor = resp.get('next_cursor')
