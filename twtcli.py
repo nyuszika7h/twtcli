@@ -216,7 +216,11 @@ with open(cursor_file, 'a+') as fd:
             pass
 
         try:
+            old_max_id = max_id
             max_id = resp[-1]['id']
+
+            if max_id == old_max_id:
+                break
         except (AttributeError, IndexError, KeyError, TypeError):
             pass
 
