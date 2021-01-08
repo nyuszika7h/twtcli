@@ -206,9 +206,12 @@ with open(cursor_file, 'a+') as fd:
                 continue
 
         if r.status_code == 204:
-            resp = 'OK'
+            resp = ''
         else:
-            resp = r.json()
+            try:
+                resp = r.json()
+            except json.decoder.JSONDecodeError:
+                resp = r.text
 
         print(json.dumps(resp), flush=True)
 
