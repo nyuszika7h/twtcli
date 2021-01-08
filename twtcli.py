@@ -205,15 +205,15 @@ with open(cursor_file, 'a+') as fd:
                 time.sleep(args.ratelimit)
                 continue
 
-        if not r.ok:
-            r.raise_for_status()
-
         if r.status_code == 204:
             resp = 'OK'
         else:
             resp = r.json()
 
         print(json.dumps(resp), flush=True)
+
+        if not r.ok:
+            r.raise_for_status()
 
         try:
             cursor = resp.get('next_cursor')
