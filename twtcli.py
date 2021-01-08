@@ -195,7 +195,7 @@ with open(cursor_file, 'a+') as fd:
         if r.status_code in (420, 429):
             reset = float(r.headers.get('x-rate-limit-reset') or 0)
 
-            if reset:
+            if reset and reset > 0:
                 delay = reset - time.time()
                 log(f'Rate limit exceeded, reset in {delay:.1f}s')
                 time.sleep(delay)
