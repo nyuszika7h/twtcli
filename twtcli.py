@@ -81,7 +81,8 @@ parser.add_argument(
     help='enable debug logging',
 )
 parser.add_argument(
-    'user',
+    '-u',
+    '--user',
     help='user to authenticate as',
 )
 parser.add_argument(
@@ -108,7 +109,7 @@ url = f'https://api.twitter.com/{api_version}/{endpoint}.json'
 
 app_token = config['app']['token']
 csrf_token = uuid.uuid4().hex
-auth_token = config['users'][args.user]
+auth_token = config['users'][args.user] if args.user else None
 
 session = requests.Session()
 
@@ -116,10 +117,14 @@ session.headers = {
     'accept': 'application/json',
     'authorization': f'Bearer {app_token}',
     'content-type': 'application/x-www-form-urlencoded',
-    'cookie': f'auth_token={auth_token}; ct0={csrf_token}',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36',
     'x-csrf-token': csrf_token,
 }
+
+cookies = {'ct0': csrf_token}
+if auth_token:
+    cookies.update({'auth_token': auth_token})
+session.cookies = requests.cookies.cookiejar_from_dict(cookies)
 
 req_args = {'params': {}}
 data = {}
