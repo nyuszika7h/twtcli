@@ -4,9 +4,10 @@ import argparse
 import hashlib
 import json
 import os
+import random
+import string
 import sys
 import time
-import uuid
 
 import requests
 import toml
@@ -108,7 +109,7 @@ if endpoint.endswith('.json'):
 url = f'https://api.twitter.com/{api_version}/{endpoint}.json'
 
 app_token = config['app']['token']
-csrf_token = uuid.uuid4().hex
+csrf_token = ''.join(random.choices(string.hexdigits[:16], k=160))
 auth_token = config['users'][args.user] if args.user else None
 
 session = requests.Session()
